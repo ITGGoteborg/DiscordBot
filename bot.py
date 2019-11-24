@@ -48,5 +48,15 @@ async def on_message(message):
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
+    elif message.content == "raise-exception":
+        raise discord.DiscordException
+
+@client.event
+async def on_error(event, *args, **kwargs):
+    with open("err.log", "a") as f:
+        if event == "on_message":
+            f.write(f"Unhandled message: {args[0]}\n")
+        else:
+            raise
 
 client.run(TOKEN)
