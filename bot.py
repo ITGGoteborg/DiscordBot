@@ -15,7 +15,7 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-    guild = discord.utils.get(client.guilds, name=GUILD)
+    guild = discord.utils.get(client.guilds)
     print(
         f"{client.user} is connected to the following guild(s):\n"
         f"{guild.name} (id: {guild.id})"
@@ -28,11 +28,22 @@ async def on_member_join(member):
         f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!"
     )
 
+def plus(content):
+    # find index of plus
+    pos = content.find("+")
+    if pos != 1: # if characters isnt found, find() returns -1
+        content = "".join(c for c in content if c.isdigit()) # remove all non ints from content
+        left_of = content[0:pos-1]
+        right_of = content[pos-1:len(content)]
+        return int(left_of) + int(right_of)
+    else:
+        return
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-    
+
     programming_jokes = [
         "How many programmers does it take to screw in a light bulb? \n\nNone. It's a hardware problem.",
         "A programmer puts two glasses on his bedside table before going to sleep. A full one, in case he gets thirsty, and an empty one, in case he doesn’t.",
@@ -48,6 +59,8 @@ async def on_message(message):
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
+    elif "+" in message.content:
+        await message.channel.send( plus(message.content) )
     elif message.content == "raise-exception":
         raise discord.DiscordException
 
@@ -59,4 +72,5 @@ async def on_error(event, *args, **kwargs):
         else:
             raise
 
+#Actually starts and runs the BOT
 client.run(TOKEN)
