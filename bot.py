@@ -36,8 +36,8 @@ def plus(content):
     pos = content.find("+")
     if pos != 1: # if characters isnt found, find() returns -1
         content = "".join(c for c in content if c.isdigit()) # remove all non ints from content
-        left_of = content[0:pos-1]
-        right_of = content[pos-1:len(content)]
+        left_of = content[0:pos]
+        right_of = content[pos:len(content)]
         return int(left_of) + int(right_of)
     else:
         return
