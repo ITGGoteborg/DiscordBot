@@ -7,12 +7,14 @@ import random
 import discord
 from dotenv import load_dotenv
 
+#Initializes required tokens from .env-file
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 GUILD = os.getenv("DISCORD_GUILD")
 
 client = discord.Client()
 
+#Prints BOTs status and connected server at start
 @client.event
 async def on_ready():
     guild = discord.utils.get(client.guilds)
@@ -21,6 +23,7 @@ async def on_ready():
         f"{guild.name} (id: {guild.id})"
     )
 
+#When new member joins, sends them a direct-message on Dicord
 @client.event
 async def on_member_join(member):
     await member.create_dm()
@@ -41,6 +44,7 @@ def plus(content):
 
 @client.event
 async def on_message(message):
+    #Checks if BOT sent the message to prevent infinite feedback-loop
     if message.author == client.user:
         return
 
@@ -64,6 +68,7 @@ async def on_message(message):
     elif message.content == "raise-exception":
         raise discord.DiscordException
 
+#Error handling, writes the Exception to err.log-file
 @client.event
 async def on_error(event, *args, **kwargs):
     with open("err.log", "a") as f:
