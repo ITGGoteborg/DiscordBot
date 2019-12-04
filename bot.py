@@ -5,6 +5,7 @@ import os
 import random
 
 import discord
+import logging
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -12,15 +13,21 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
+#Initialize client class
 client = commands.Bot(command_prefix = ".")
+
+#Initialize logging and status printout
+logging.basicConfig(level=logging.INFO)
 
 #Prints BOTs status and connected guild at start
 @client.event
 async def on_ready():
     guild = discord.utils.get(client.guilds)
     print(
+        "------------------------------------------------------\n"
         f"{client.user} is connected to the following guild(s):\n"
         f"{guild.name} (id: {guild.id})"
+        "\n------------------------------------------------------"
     )
 
 #When new member joins, sends them a direct-message on Dicord
@@ -72,10 +79,18 @@ async def on_message(message):
         await message.author.send("Test123")
     elif message.content == "Hello":
         await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
-    """ elif "+" in message.content:
+    elif "+" in message.content:
         await message.channel.send( plus(message.content) )
-    elif message.content == "raise-exception":
+    """ elif message.content == "raise-exception":
         raise discord.DiscordException """
+
+
+#Advanced logging
+""" logger = logging.getLogger("discord")
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler) """
 
 #Error handling, writes the Exception to err.log-file
 """ @client.event
