@@ -5,16 +5,16 @@ import os
 import random
 
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 #Initializes required tokens from .env-file
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD = os.getenv("DISCORD_GUILD")
 
-client = discord.Client()
+client = commands.Bot(command_prefix = ".")
 
-#Prints BOTs status and connected server at start
+#Prints BOTs status and connected guild at start
 @client.event
 async def on_ready():
     guild = discord.utils.get(client.guilds)
@@ -30,6 +30,11 @@ async def on_member_join(member):
     await member.dm_channel_send(
         f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!"
     )
+
+#When leaves, print to console
+@client.event
+async def on_member_remove(member):
+    print(f"{member} has left the server.")
 
 def plus(content):
     # find index of plus
@@ -63,19 +68,23 @@ async def on_message(message):
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
-    elif "+" in message.content:
+    elif message.content == "dm":
+        await message.author.send("Test123")
+    elif message.content == "Hello":
+        await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
+    """ elif "+" in message.content:
         await message.channel.send( plus(message.content) )
     elif message.content == "raise-exception":
-        raise discord.DiscordException
+        raise discord.DiscordException """
 
 #Error handling, writes the Exception to err.log-file
-@client.event
+""" @client.event
 async def on_error(event, *args, **kwargs):
     with open("err.log", "a") as f:
         if event == "on_message":
             f.write(f"Unhandled message: {args[0]}\n")
         else:
-            raise
+            raise """
 
 #Actually starts and runs the BOT
 client.run(TOKEN)
