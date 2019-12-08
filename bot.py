@@ -55,7 +55,7 @@ def plus(content):
         return
 
 #Commands and responses for client
-@client.command(name='ping', help="Returns latency of Bot.")
+@client.command(name="ping", help="Returns latency of Bot.")
 async def ping(ctx):
     await ctx.send(f"Pong! {round(client.latency * 1000)}ms")
 
@@ -113,6 +113,10 @@ async def on_message(message):
         await message.channel.send(plus(message.content))
     elif message.content == "raise-exception":
         raise discord.DiscordException """
+
+@client.command(name="clear")
+async def clear(ctx, amount=1):
+    await ctx.channel.purge(limit=amount+1)
 
 #Advanced logging
 """ logger = logging.getLogger("discord")
