@@ -13,11 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-#Initialize client class
-client = commands.Bot(command_prefix = ".")
+client = commands.Bot(command_prefix = ".") #Initialize client class
 
-#Initialize logging and status printout
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO) #Initialize logging and status printout
 
 #Prints BOTs status and connected guild at start
 @client.event
@@ -38,7 +36,7 @@ async def on_member_join(member):
         f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!"
     )
 
-#When leaves, print to console
+#When member leaves, print to console
 @client.event
 async def on_member_remove(member):
     print(f"{member} has left the server.")
@@ -109,7 +107,7 @@ async def on_message(message):
     elif message.content == "dm":
         await message.author.send("Test123")
     elif message.content == "Hello":
-        await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
+        await message.channel.send(f"Hello dear {message.author.nick} at {message.guild}, I see you joined {message.author.joined_at}.")
     elif "+" in message.content:
         await message.channel.send(plus(message.content))
     
@@ -126,5 +124,4 @@ handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w"
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler) """
 
-#Actually starts and runs the BOT
-client.run(TOKEN)
+client.run(TOKEN) #Actually starts and runs the BOT
