@@ -54,7 +54,12 @@ def plus(content):
     else:
         return
 
-@client.event
+#Commands and responses for client
+@client.command(name='ping')
+async def ping(ctx):
+    await ctx.send(f"Pong! {round(client.latency * 1000)}ms")
+
+""" @client.event
 async def on_message(message):
     #Checks if BOT sent the message to prevent infinite feedback-loop
     if message.author == client.user:
@@ -80,10 +85,9 @@ async def on_message(message):
     elif message.content == "Hello":
         await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
     elif "+" in message.content:
-        await message.channel.send( plus(message.content) )
-    """ elif message.content == "raise-exception":
+        await message.channel.send(plus(message.content))
+    elif message.content == "raise-exception":
         raise discord.DiscordException """
-
 
 #Advanced logging
 """ logger = logging.getLogger("discord")
