@@ -102,6 +102,7 @@ async def on_message(message):
         "In order to understand recursion you must first understand recursion."
     ]
 
+    #Checks the message contains and responds accordingly
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
@@ -111,6 +112,8 @@ async def on_message(message):
         await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
     elif "+" in message.content:
         await message.channel.send(plus(message.content))
+    
+    await client.process_commands(message) #Enables commands
 
 @client.command(name="clear")
 async def clear(ctx, amount=1):
