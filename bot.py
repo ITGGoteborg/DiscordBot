@@ -121,14 +121,5 @@ handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w"
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler) """
 
-#Error handling, writes the Exception to err.log-file
-""" @client.event
-async def on_error(event, *args, **kwargs):
-    with open("err.log", "a") as f:
-        if event == "on_message":
-            f.write(f"Unhandled message: {args[0]}\n")
-        else:
-            raise """
-
 #Actually starts and runs the BOT
 client.run(TOKEN)
