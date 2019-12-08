@@ -84,7 +84,7 @@ async def _8ball(ctx, *, question):
         "Very doubtful."]
     await ctx.send(f"Question: {question}\nAnswer: {random.choice(responses)}")
 
-""" @client.event
+@client.event
 async def on_message(message):
     #Checks if BOT sent the message to prevent infinite feedback-loop
     if message.author == client.user:
@@ -111,8 +111,6 @@ async def on_message(message):
         await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
     elif "+" in message.content:
         await message.channel.send(plus(message.content))
-    elif message.content == "raise-exception":
-        raise discord.DiscordException """
 
 @client.command(name="clear")
 async def clear(ctx, amount=1):
