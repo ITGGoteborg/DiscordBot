@@ -5,22 +5,29 @@ import os
 import random
 
 import discord
+import logging
+from discord.ext import commands
 from dotenv import load_dotenv
 
 #Initializes required tokens from .env-file
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD = os.getenv("DISCORD_GUILD")
 
-client = discord.Client()
+#Initialize client class
+client = commands.Bot(command_prefix = ".")
 
-#Prints BOTs status and connected server at start
+#Initialize logging and status printout
+logging.basicConfig(level=logging.INFO)
+
+#Prints BOTs status and connected guild at start
 @client.event
 async def on_ready():
     guild = discord.utils.get(client.guilds)
     print(
+        "------------------------------------------------------\n"
         f"{client.user} is connected to the following guild(s):\n"
         f"{guild.name} (id: {guild.id})"
+        "\n------------------------------------------------------"
     )
 
 #When new member joins, sends them a direct-message on Dicord
@@ -30,6 +37,11 @@ async def on_member_join(member):
     await member.dm_channel_send(
         f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!"
     )
+
+#When leaves, print to console
+@client.event
+async def on_member_remove(member):
+    print(f"{member} has left the server.")
 
 def plus(content):
     # find index of plus
@@ -42,7 +54,37 @@ def plus(content):
     else:
         return
 
-@client.event
+#Commands and responses for client
+@client.command(name='ping', help="Returns latency of Bot.")
+async def ping(ctx):
+    await ctx.send(f"Pong! {round(client.latency * 1000)}ms")
+
+@client.command(aliases = ["8ball"], help="The Magic 8 Ball has all the answers to life's questions.")
+async def _8ball(ctx, *, question):
+    responses = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful."]
+    await ctx.send(f"Question: {question}\nAnswer: {random.choice(responses)}")
+
+""" @client.event
 async def on_message(message):
     #Checks if BOT sent the message to prevent infinite feedback-loop
     if message.author == client.user:
@@ -63,19 +105,21 @@ async def on_message(message):
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
+    elif message.content == "dm":
+        await message.author.send("Test123")
+    elif message.content == "Hello":
+        await message.channel.send(f"Hello {message.author.nick} and {message.guild} and {message.author.joined_at}")
     elif "+" in message.content:
-        await message.channel.send( plus(message.content) )
+        await message.channel.send(plus(message.content))
     elif message.content == "raise-exception":
-        raise discord.DiscordException
+        raise discord.DiscordException """
 
-#Error handling, writes the Exception to err.log-file
-@client.event
-async def on_error(event, *args, **kwargs):
-    with open("err.log", "a") as f:
-        if event == "on_message":
-            f.write(f"Unhandled message: {args[0]}\n")
-        else:
-            raise
+#Advanced logging
+""" logger = logging.getLogger("discord")
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler) """
 
 #Actually starts and runs the BOT
 client.run(TOKEN)

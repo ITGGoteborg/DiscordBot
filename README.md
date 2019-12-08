@@ -11,3 +11,4 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install prerequ
 pip install -U discord.py
 pip install -U python-dotenv
 ```
+## Contribution
