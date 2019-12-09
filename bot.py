@@ -57,6 +57,12 @@ def plus(content):
 async def ping(ctx):
     await ctx.send(f"Pong! {round(client.latency * 1000)}ms")
 
+@client.command(help="Repeats your message n times")
+async def repeat(ctx, times: int, content='repeating...'):
+    #Repeats a message multiple times.
+    for i in range(times):
+        await ctx.send(f":clap:{content}:clap:")
+
 @client.command(aliases = ["8ball"], help="The Magic 8 Ball has all the answers to life's questions.")
 async def _8ball(ctx, *, question):
     responses = [
