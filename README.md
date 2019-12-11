@@ -14,7 +14,7 @@ pip install -U python-dotenv
 ## Contribution
 
 ## Todo
-Profilepicture viewer
-Google image-search
-Rap battle (roast)
-Send meeting info every wednesday
+*Profilepicture viewer
+*Google image-search
+*Rap battle (roast)
+*Send meeting info every wednesday
