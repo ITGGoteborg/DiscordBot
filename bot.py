@@ -44,13 +44,12 @@ async def on_member_remove(member):
 def plus(content):
     # find index of plus
     pos = content.find("+")
-    if pos != 1: # if characters isnt found, find() returns -1
+    if pos != -1: # if characters isnt found, find() returns -1
         content = "".join(c for c in content if c.isdigit()) # remove all non ints from content
         left_of = content[0:pos]
         right_of = content[pos:len(content)]
+        print(left_of + right_of)
         return int(left_of) + int(right_of)
-    else:
-        return
 
 #Commands and responses for client
 @client.command(name="ping", help="Returns latency of Bot.")
