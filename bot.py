@@ -32,14 +32,14 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     await member.create_dm()
-    await member.dm_channel_send(
-        f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!"
-    )
+    await member.dm_channel_send(f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!")
 
 #When member leaves, print to console
 @client.event
 async def on_member_remove(member):
     print(f"{member} has left the server.")
+    await member.create_dm()
+    await member.dm_channel_send(f"Hej {member.name}, tråkigt att du lämnar oss")
 
 def plus(content):
     # find index of plus
@@ -118,9 +118,14 @@ async def on_message(message):
     
     await client.process_commands(message) #Enables commands
 
+@commands.guild_only()
 @client.command(name="clear")
 async def clear(ctx, amount=1):
-    await ctx.channel.purge(limit=amount+1)
+    role = discord.utils.get(ctx.guild.roles, name="styrelseledamöter")
+    if role in ctx.author.roles:
+        await ctx.channel.purge(limit=amount+1)
+    else:
+        await ctx.send(f"{ctx.author} doesn't have permission")
 
 #Advanced logging
 """ logger = logging.getLogger("discord")
