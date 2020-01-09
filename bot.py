@@ -106,6 +106,11 @@ async def on_message(message):
     ]
 
     #Checks the message contains and responds accordingly
+    for msg in ["i am", "im", "i'm", "jag är"]: #Dadjoke 
+        if msg in message.content.lower():
+            response = message.content.lower().split()
+            msg_out = response[response.index(msg.split()[-1]) +1]
+            await message.channel.send(f"Hej {msg_out}, jag är {client.user}")
     if message.content == "joke":
         response = random.choice(programming_jokes)
         await message.channel.send("Did someone say joke? \n" + response)
