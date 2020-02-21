@@ -8,6 +8,8 @@ import discord
 import logging
 from discord.ext import commands
 from dotenv import load_dotenv
+import time
+import schedule
 
 #Initializes required tokens from .env-file
 load_dotenv()
@@ -17,6 +19,19 @@ client = commands.Bot(command_prefix = ".") #Initialize client class
 
 logging.basicConfig(level=logging.INFO) #Initialize logging and status printout
 
+
+def meetingInfo():
+    channel = discord.utils.get(client.get_all_channels(), name="bot-commands")
+    channel.send(f"Beep-Boop: Möte som vanligt i sal 318 kl. 15:00 idag. Fika finns som vanligt. \n{discord.Guild.default_role}")
+def yeet():
+    print("Test1230")
+
+schedule.every().tuesday.at("18:00").do(meetingInfo)
+schedule.every().minute.do(yeet)
+""" while True: 
+    schedule.run_pending() 
+    time.sleep(1) 
+ """
 #Prints BOTs status and connected guild at start
 @client.event
 async def on_ready():
@@ -35,11 +50,11 @@ async def on_member_join(member):
     await member.dm_channel_send(f"Hej {member.name}, välkommen till NTI Johannebergs Programmeringsklubb!")
 
 #When member leaves, print to console
-@client.event
-async def on_member_remove(member):
-    print(f"{member} has left the server.")
-    await member.create_dm()
-    await member.dm_channel_send(f"Hej {member.name}, tråkigt att du lämnar oss")
+#@client.event
+#async def on_member_remove(member):
+#    print(f"{member} has left the server.")
+#    await member.create_dm()
+#    await member.dm_channel_send(f"Hej {member.name}, tråkigt att du lämnar oss")
 
 def plus(content):
     # find index of plus
@@ -61,6 +76,11 @@ async def repeat(ctx, times: int, content='repeating...'):
     #Repeats a message multiple times.
     for i in range(times):
         await ctx.send(f":clap:{content}:clap:")
+
+""" @client.command(name="meetingInfo")
+async def meetingInfo(ctx):
+    channel = discord.utils.get(client.get_all_channels(), name="bot-commands")
+    await channel.send(f"Beep-Boop: Möte som vanligt i sal 318 kl. 15:00 idag. Fika finns som vanligt. \n{ctx.guild.default_role}") """
 
 @client.command(aliases = ["8ball"], help="The Magic 8 Ball has all the answers to life's questions.")
 async def _8ball(ctx, *, question):
@@ -132,11 +152,13 @@ async def clear(ctx, amount=1):
     else:
         await ctx.send(f"{ctx.author} doesn't have permission")
 
+
+
 #Advanced logging
-""" logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler) """
+#logger = logging.getLogger("discord")
+#logger.setLevel(logging.DEBUG)
+#handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+#handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+#logger.addHandler(handler)
 
 client.run(TOKEN) #Actually starts and runs the BOT
