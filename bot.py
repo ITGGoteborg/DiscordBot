@@ -6,10 +6,10 @@ import random
 
 import discord
 import logging
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import time
-import schedule
+import asyncio
+import datetime
 
 #Initializes required tokens from .env-file
 load_dotenv()
@@ -19,19 +19,8 @@ client = commands.Bot(command_prefix = ".") #Initialize client class
 
 logging.basicConfig(level=logging.INFO) #Initialize logging and status printout
 
+target_channel_id = 417402270188044291 #ID for meeting-information
 
-def meetingInfo():
-    channel = discord.utils.get(client.get_all_channels(), name="bot-commands")
-    channel.send(f"Beep-Boop: Möte som vanligt i sal 318 kl. 15:00 idag. Fika finns som vanligt. \n{discord.Guild.default_role}")
-def yeet():
-    print("Test1230")
-
-schedule.every().tuesday.at("18:00").do(meetingInfo)
-schedule.every().minute.do(yeet)
-""" while True: 
-    schedule.run_pending() 
-    time.sleep(1) 
- """
 #Prints BOTs status and connected guild at start
 @client.event
 async def on_ready():
@@ -42,6 +31,24 @@ async def on_ready():
         f"{guild.name} (id: {guild.id})"
         "\n------------------------------------------------------"
     )
+
+@tasks.loop(hours=168.0)
+async def called_every_week():
+    message_channel = client.get_channel(target_channel_id)
+    print(f"Acquired channel: {message_channel}")
+    await message_channel.send(f"Beep-Boop: Möte som idag i sal 318 kl. 15:00. Fika finns som vanligt. \n{discord.Guild.default_role}")
+
+@called_every_week.before_loop
+async def before():
+    print("Waiting for Wednesday 08:00 to start task loop...")
+    await client.wait_until_ready()
+    while datetime.datetime.now().strftime("%w") != "3":
+        await asyncio.sleep(43200)
+    while datetime.datetime.now().strftime("%H") != "08":
+        await asyncio.sleep(3600)
+    print("Finished waiting: Task loop starts")
+
+called_every_week.start()
 
 #When new member joins, sends them a direct-message on Dicord
 @client.event
@@ -76,11 +83,6 @@ async def repeat(ctx, times: int, content='repeating...'):
     #Repeats a message multiple times.
     for i in range(times):
         await ctx.send(f":clap:{content}:clap:")
-
-""" @client.command(name="meetingInfo")
-async def meetingInfo(ctx):
-    channel = discord.utils.get(client.get_all_channels(), name="bot-commands")
-    await channel.send(f"Beep-Boop: Möte som vanligt i sal 318 kl. 15:00 idag. Fika finns som vanligt. \n{ctx.guild.default_role}") """
 
 @client.command(aliases = ["8ball"], help="The Magic 8 Ball has all the answers to life's questions.")
 async def _8ball(ctx, *, question):
@@ -151,7 +153,6 @@ async def clear(ctx, amount=1):
         await ctx.channel.purge(limit=amount+1)
     else:
         await ctx.send(f"{ctx.author} doesn't have permission")
-
 
 
 #Advanced logging
